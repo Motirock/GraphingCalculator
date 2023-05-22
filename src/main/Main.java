@@ -1,8 +1,7 @@
 ///////////////////////////////////////
-//  |         |     -----     |---\  //
-//  |    |    |       |       |   |  //         //Place your important
-//  |    |    |       |       |---/  //         //information up here
-//   \__/ \__/      -----     |      //
+//Created May 2023 for Calc BC Final Project
+//Created by Victor Monnier and Sam Koliner
+//Java Application template by Victor Monnier
 ///////////////////////////////////////
 
 /*
@@ -15,7 +14,6 @@ package main;
 import javax.swing.*;
 
 public class Main{
-
     public static JFrame window = new JFrame();
 
     public static void main(String[] args) throws Exception {
@@ -24,7 +22,7 @@ public class Main{
         //Setting properties of window
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  //Closes application when X is pressed
         window.setResizable(false);                             //Can't be manually resized
-        window.setTitle("My Java Application");                 //Window title
+        window.setTitle("Graphing Calculator");                 //Window title
         window.setFocusTraversalKeysEnabled(false);             //Disables certain keys, like tab, from having special use
 
         //Adding gamePanel, which actually controls the application

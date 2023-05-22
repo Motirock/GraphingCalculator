@@ -12,6 +12,8 @@ public class Equation {
     private boolean startingIsX = false;
     private ArrayList<Operator> operators = new ArrayList<Operator>();
     private Color graphColor = Color.RED;
+    public int graphDerivativeAmount;
+    public int graphIntegralAmount;
 
     public Equation(String s, int colorID) {
         switch (colorID) {
@@ -42,6 +44,56 @@ public class Equation {
         System.out.println("_"+t+'_');
     }
     
+    //Preset functions used for testing
+    public Equation(int ID, int colorID) {
+        switch (ID) {
+            case 0:
+                startingIsX = true;
+                operators.add(new RegularOperator('^', 2));
+                operators.add(new XOperator('-'));
+                break;
+            case 1:
+                startingIsX = true;
+                operators.add(new RegularOperator('^', 0.5));
+                operators.add(new XOperator('%'));
+                break;
+            case 2:
+                startingIsX = true;
+                operators.add(new RegularOperator('+', -2));
+                operators.add(new NestedFunctionOperator('*', new Equation(0, 0)));
+                break;
+            case 3:
+                startingIsX = true;
+                operators.add(new RegularOperator('%', 4));
+                operators.add(new NestedFunctionOperator('*', new Equation(2, 0)));
+                break;
+        }
+
+        switch (colorID) {
+            case 0:
+                graphColor = Color.RED;
+                break;
+            case 1:
+                graphColor = Color.GREEN;
+                break;
+            case 2:
+                graphColor = Color.BLUE;
+                break;
+            case 3:
+                graphColor = Color.YELLOW;
+                break;
+            case 4:
+                graphColor = Color.CYAN;
+                break;
+            case 5:
+                graphColor = Color.PINK;
+                break;
+            case 6:
+                graphColor = Color.WHITE;
+                break;
+        }
+    }
+
     public double calculate(double x) {
         if (startingIsX)
             startingNumber = x;

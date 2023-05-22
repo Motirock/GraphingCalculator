@@ -1,24 +1,23 @@
 package game;
 
-import main.KeyHandler;
-import main.MouseHandler;
 import main.GamePanel;
 
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
-//TODO RENAME TO CALCULTAOR, put in static methods
+
 public class Calculator {
     private long updates = 0;
 
     private GamePanel gp;
 
-    private Scanner input;
-
     private static NumberFormat formatter = new DecimalFormat("#0.00000");
+    private String filePath;
 
     private double viewChangeAmount = 0.0;
     private int previousMouseX = 0, previousMouseY = 0;
@@ -31,10 +30,52 @@ public class Calculator {
 
     public Calculator(GamePanel gp) {
         this.gp = gp;
-        input = new Scanner(System.in);
+        filePath = System.getProperty("user.dir");
         Equation.gp = gp;
 
-        equations.add(new Equation("34*5", 0));
+        loadEquations();
+    }
+
+    //TODO: wehre flags would be set like: FLAG:GRAPH_DERIVATIVE:2 for graphing second derivative
+    //Be able to set windown dimensions and position
+    public void loadEquations() {
+        equations = new ArrayList<Equation>();
+        int colorID = 0;
+
+        try {
+            File text = new File(filePath+"/src/data/input.txt");
+            Scanner saveScanner = new Scanner(text);
+
+            System.out.println("\nStarting loading equations");
+            while (saveScanner.hasNextLine()) {
+                //Reading input
+                String line = saveScanner.nextLine().trim();
+
+                //Ignores everything past '#' (comments/documentation)
+                if (line.contains("#"))
+                    line = line.substring(0, line.indexOf('#'));
+
+                //Loading equations
+                else if (line.startsWith("GRAPH:")) {
+                    line = line.substring(6).trim();
+                    equations.add(new Equation(Integer.parseInt(line), colorID));
+                }
+
+                //Changing color
+                else if (line.startsWith("COLOR_ID:")) {
+                    line = line.substring(9).trim();
+                    colorID = Integer.parseInt(line);
+                }
+                
+                System.out.print(".");
+            }
+            System.out.println("\nDone loading equations");
+
+            saveScanner.close();
+        } catch (IOException e) {
+            System.out.println("Error occurred while loading");
+            e.printStackTrace();
+        }
     }
 
     public void update() {
@@ -125,28 +166,19 @@ public class Calculator {
         }
     }
 
-    public static float integral(double a, double b) {
+    public static float integral(Equation e, double a, double b) {
         double total = 0;
         double length = b-a;
         double step = length/10000000;
         for (double i = a; i <= b; i+=step) {
-            total += step*(Math.cos(i));
+            total += step*e.calculate(i);
             
         }
         return (float) total;
     }
 
-    public static float integral(String s, double a, double b) {
-        double total = 0;
-        return (float) total;
-    }
-
-    public static float derivative(double x) {
+    public static float derivative(Equation e, double x) {
         double h = 1.0/10_000_000;
-        return (float) ((((x+h)*(x+h))-x*x)/h);
-    }
-
-    public static float derivative(String s, double x) {
-        return -1.0f;
+        return (float) (((e.calculate(x+h))-e.calculate(x))/h);
     }
 }
